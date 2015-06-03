@@ -40,48 +40,17 @@ static NotificationManager *manager = nil;
 
     
     //リモートプッシュ通知を受信するためのdeviceTokenを要求
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
     
     //application:didFinishLaunchingWithOptions:のreturn文前に追加
-    manager = [[NotificationManager alloc] init];
     
     return YES;
 }
 
--(void)application:(UIApplication *)application
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-    //NCMBInstallation作成
-    NCMBInstallation *installation = [NCMBInstallation currentInstallation];
-    //デバイストークンをセット
-    [installation setDeviceTokenFromData:deviceToken];
-    //ニフティクラウド mobile  backendのデータストアに登録
-    [installation saveInBackgroundWithBlock:^(NSError *error) {
-        if(!error){
-            //端末情報の登録が成功した場合の処理
-        } else {
-            //端末情報の登録が失敗した場合の処理
-        }
-    }];
-}
+//デバイストークンがAPNsから発行された時に呼び出されるデリゲートメソッド
 
-- (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo
-fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-    //ペイロードからセール店舗のIDを取得
-    NSString *locationId = nil;
-    locationId = [userInfo objectForKey:@"locationId"];
-    if (locationId){
-        //Locaton Notificationの設定
-        [manager searchLocations:locationId block:^(NSError *error) {
-            if (error){
-                NSLog(@"error:%@",error);
-            }
-            completionHandler(UIBackgroundFetchResultNewData);
-        }];
-    }
-}
+
+//APNsから配信されたプッシュ通知を受信した時に呼び出されるデリゲートメソッド
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
