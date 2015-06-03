@@ -15,6 +15,8 @@
  */
 
 #import "ViewController.h"
+
+//NotificatonManagerをインポート
 #import "NotificationManager.h"
 
 @interface ViewController ()
@@ -22,14 +24,16 @@
 
 @end
 
+//static変数を追加
 static NotificationManager *manager = nil;
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    manager = [[NotificationManager alloc] init];
+
+    //static変数にNotificationManagerのインスタンスを代入
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -38,12 +42,8 @@ static NotificationManager *manager = nil;
 }
 
 - (IBAction)updateLocationNotification:(id)sender {
-    [manager searchLocations:@"LOCATION_ID" block:^(NSError *error) {
-        if (error){
-            NSLog(@"error:%@",error);
-        } else {
-            NSLog(@"Notification is scheduled.");
-        }
-    }];
+    
+    //NotificatonManagerの店舗情報取得メソッドを呼び出す
 }
+
 @end

@@ -15,6 +15,7 @@
  */
 
 #import "AppDelegate.h"
+//ニフティクラウド mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 #import "NotificationManager.h"
@@ -36,12 +37,7 @@ static NotificationManager *manager = nil;
                   clientKey:@"YOUR_CLIENT_KEY"];
     
     //プッシュ通知の許可画面を表示させる
-    UIUserNotificationType types = UIUserNotificationTypeBadge |
-    UIUserNotificationTypeSound |
-    UIUserNotificationTypeAlert;
-    UIUserNotificationSettings *mySettings =
-    [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+
     
     //リモートプッシュ通知を受信するためのdeviceTokenを要求
     [[UIApplication sharedApplication] registerForRemoteNotifications];
