@@ -3,7 +3,7 @@
 platform :ios,'6.0'
 
 target 'O2ODemo' do
-   pod 'NCMB', :git => 'https://github.com/NIFTYCloud-mbaas/ncmb_ios.git'
+   pod 'NCMB', :git => 'https://github.com/NIFCLOUD-mbaas/ncmb_ios.git'
 end
 
 target 'O2ODemoTests' do

@@ -1,5 +1,5 @@
 /*
- Copyright 2014 NIFTY Corporation All Rights Reserved.
+ Copyright 2017-2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,13 +15,15 @@
  */
 
 #import "NCMBReachability.h"
-#import "NCMBURLConnection.h"
+#import "NCMBURLSession.h"
 #import "NCMBConstants.h"
 
 #import <objc/runtime.h>
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <net/if.h>
+
+static NSString *const kHostName = @"mbaas.api.nifcloud.com";
 
 /**
  通信状況が変化した際に呼び出されるコールバックメソッド
@@ -35,25 +37,6 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target,
     [[NCMBReachability sharedInstance] reachabilityChanged];
 }
 
-
-static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char* comment)
-{
-    
-    NSLog(@"Reachability Flag Status: %c%c %c%c%c%c%c%c%c %s\n",
-          (flags & kSCNetworkReachabilityFlagsIsWWAN)               ? 'W' : '-',
-          (flags & kSCNetworkReachabilityFlagsReachable)            ? 'R' : '-',
-          
-          (flags & kSCNetworkReachabilityFlagsTransientConnection)  ? 't' : '-',
-          (flags & kSCNetworkReachabilityFlagsConnectionRequired)   ? 'c' : '-',
-          (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic)  ? 'C' : '-',
-          (flags & kSCNetworkReachabilityFlagsInterventionRequired) ? 'i' : '-',
-          (flags & kSCNetworkReachabilityFlagsConnectionOnDemand)   ? 'D' : '-',
-          (flags & kSCNetworkReachabilityFlagsIsLocalAddress)       ? 'l' : '-',
-          (flags & kSCNetworkReachabilityFlagsIsDirect)             ? 'd' : '-',
-          comment
-          );
-}
-
 @implementation NCMBReachability {
     SCNetworkReachabilityRef internetReachabilityRef;
     SCNetworkReachabilityFlags internetReachabilityFlags;
@@ -63,16 +46,20 @@ static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char*
 
 static NCMBReachability *ncmbReachability = nil;
 
+static NSObject*_objForLock = nil;
+
++ (NSObject *)objForLock {
+    if (_objForLock == nil) {
+        _objForLock = [[NSObject alloc] init];
+    }
+    return _objForLock;
+}
+
 /**
- 0.0.0.0を指定して、インターネット接続確認用のリファレンスを作成
+ APIのエンドポイントを指定して、インターネット接続確認用のリファレンスを作成
  */
 - (NCMBReachability *)init{
-    struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
-    self->internetReachabilityRef = SCNetworkReachabilityCreateWithAddress(NULL,
-                                                                           (struct sockaddr *)&zeroAddress);
+    self->internetReachabilityRef = SCNetworkReachabilityCreateWithName(NULL, [kHostName UTF8String]);
     return self;
 }
 
@@ -80,10 +67,10 @@ static NCMBReachability *ncmbReachability = nil;
  シングルトンクラスのインスタンスを返す
  */
 +(NCMBReachability*)sharedInstance{
-    @synchronized(self){
+    @synchronized(NCMBReachability.objForLock){
         if (!ncmbReachability){
             ncmbReachability = [[NCMBReachability alloc] init];
-            [ncmbReachability reachabilityWithHostName:@"mb.api.cloud.nifty.com"];
+            [ncmbReachability reachabilityWithHostName:kHostName];
         }
     }
     return ncmbReachability;
@@ -107,7 +94,9 @@ static NCMBReachability *ncmbReachability = nil;
  電波状況を更新
  */
 +(void)updateFlags:(SCNetworkReachabilityFlags)flags{
-    [NCMBReachability sharedInstance]->reachabilityFlags = flags;
+    @synchronized(NCMBReachability.objForLock){
+        [NCMBReachability sharedInstance]->reachabilityFlags = flags;
+    }
 }
 
 /**
@@ -122,10 +111,12 @@ static NCMBReachability *ncmbReachability = nil;
                                                              error: NULL];
         //ファイルが無い場合は監視を終了
         if ([contents count] == 0){
-            ncmbReachability = nil;
+            @synchronized(NCMBReachability.objForLock){
+                ncmbReachability = nil;
+            }
         } else {
             for (NSString *fileName in contents){
-                [self excecuteCommand:fileName];
+                [self executeCommand:fileName];
             }
         }
     });
@@ -133,42 +124,53 @@ static NCMBReachability *ncmbReachability = nil;
 
 /**
  ファイルに書き出された処理を実行する
+ ファイル削除後にオフラインになっていた場合はファイル復元を復元する
  */
-- (void)excecuteCommand:(NSString*)fileName{
+- (void)executeCommand:(NSString*)fileName{
     //非同期で更新された電波状況を見て、通信可能であればファイルの処理を実行
     if ([self isReachableToTarget]){
-    //if ((reachabilityFlags & kSCNetworkReachabilityFlagsReachable) == kSCNetworkReachabilityFlagsReachable){
-        //各ファイルから処理内容を取り出す
-        NSData *data = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName]];
-        NSDictionary *dictForEventually = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        NSString *url = [dictForEventually objectForKey:@"path"];
-        NSString *method = [dictForEventually objectForKey:@"method"];
-        NSData *saveData = nil;
-        if ([[dictForEventually allKeys] containsObject:@"saveData"]){
-            NSDictionary *saveDic = [dictForEventually objectForKey:@"saveData"];
-            NSError *error = nil;
-            saveData = [NSJSONSerialization dataWithJSONObject:saveDic
-                                                       options:kNilOptions
-                                                         error:&error];
-        }
-        
-        
-        //APIリクエスト用コネクションを作成
-        NCMBURLConnection *connect = [[NCMBURLConnection new] initWithPath:url method:method data:saveData];
-        
-        //同期通信を実行
-        NSError *error = nil;
-        [connect syncConnection:&error];
-        NSError *deleteError = nil;
-        if (error){
-            if (error.code != -1009){
-                //オフラインエラーだった場合は再実行のためにファイルを残す
-                [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName] error:&deleteError];
+        NSFileManager *fileManager = [[NSFileManager alloc] init];
+        NSString *filePath = [NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName];
+        if ([fileManager fileExistsAtPath:filePath]) {
+            
+            //各ファイルから処理内容を取り出す
+            NSData *data = [NSData dataWithContentsOfFile:filePath];
+            NSDictionary *dictForEventually = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            
+            NSString *url = [dictForEventually objectForKey:@"path"];
+            NSString *method = [dictForEventually objectForKey:@"method"];
+            NSDictionary *saveDic = nil;
+            if ([[dictForEventually allKeys] containsObject:@"saveData"]){
+                saveDic = [dictForEventually objectForKey:@"saveData"];
             }
-        } else {
-            //エラーがない場合の処理ファイル削除
-            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName] error:&deleteError];
+            
+            //ファイルを削除する
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName] error:nil];
+            
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            
+            NCMBRequest *request = [[NCMBRequest alloc] initWithURLString:url
+                                                                   method:method
+                                                                   header:nil
+                                                                     body:saveDic];
+            // 通信
+            NSError __block *sessionError = nil;
+            NCMBURLSession *session = [[NCMBURLSession alloc] initWithRequestSync:request];
+            [session dataAsyncConnectionWithBlock:^(NSDictionary *responseData, NSError *requestError){
+                if (requestError){
+                    sessionError = requestError;
+                }
+                dispatch_semaphore_signal(semaphore);
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            
+            if(sessionError){
+                if (sessionError.code == NSURLErrorNotConnectedToInternet || sessionError.code == NSURLErrorNetworkConnectionLost){
+                    //オフライン時はファイルを復元する
+                    [data writeToFile:[NSString stringWithFormat:@"%@%@", COMMAND_CACHE_FOLDER_PATH, fileName] options:NSDataWritingAtomic error:nil];
+                }
+            }
         }
     }
 }
@@ -241,5 +243,5 @@ static NCMBReachability *ncmbReachability = nil;
     
     return NO;
 }
- 
+
 @end

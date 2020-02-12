@@ -1,5 +1,5 @@
 /*
- Copyright 2014 NIFTY Corporation All Rights Reserved.
+ Copyright 2017-2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 #import <UIKit/UIKit.h>
 #import "NCMBAnalytics.h"
 #import "NCMBPush.h"
-#import "NCMBURLConnection.h"
 #import "NCMBInstallation.h"
+#import "NCMBURLSession.h"
 
 @implementation NCMBAnalytics
 
@@ -28,21 +28,22 @@
 }
 
 + (void)trackAppOpenedWithRemoteNotificationPayload:(NSDictionary *)userInfo{
-    NSString * pushId = [userInfo objectForKey:@"com.nifty.PushId"];
+    NSString * pushId = [userInfo objectForKey:@"com.nifcloud.mbaas.PushId"];
     NCMBInstallation *installation = [NCMBInstallation currentInstallation];
     if (pushId != nil && installation.deviceToken != nil){
         //コネクションを作成
         NSDictionary *requestData = @{@"deviceType":installation.deviceType,
                                      @"deviceToken":installation.deviceToken
                                      };
-        NSError *error = nil;
-        NSData *json = [NSJSONSerialization dataWithJSONObject:requestData
-                                                       options:kNilOptions
-                                                         error:&error];
+ 
         NSString *url = [NSString stringWithFormat:@"push/%@/openNumber", pushId];
-        NCMBURLConnection *connect = [[NCMBURLConnection alloc] initWithPath:url
-                                                                      method:@"POST" data:json];
-        [connect asyncConnectionWithBlock:nil];
+        NCMBRequest *request = [[NCMBRequest alloc] initWithURLString:url
+                                                               method:@"POST"
+                                                               header:nil
+                                                                 body:requestData];
+        
+        NCMBURLSession *session = [[NCMBURLSession alloc] initWithProgress:request progress:nil];
+        [session dataAsyncConnectionWithBlock:nil];
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
 }
