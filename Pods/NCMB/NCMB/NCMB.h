@@ -1,5 +1,5 @@
 /*
- Copyright 2014 NIFTY Corporation All Rights Reserved.
+ Copyright 2017-2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -29,13 +29,7 @@
 #import "NCMBObject.h"
 #import "NCMBUser.h"
 #import "NCMBFile.h"
-#import "NCMBTwitterUtils.h"
-
-#if defined(__has_include)
-#if __has_include(<FacebookSDK/FacebookSDK.h>) || __has_include(<FBSDKLoginKit/FBSDKLoginKit.h>)
-#import "NCMBFacebookUtils.h"
-#endif
-#endif
+#import "NCMBScript.h"
 
 #ifdef NCMBTEST
 #define NCMBDEBUGLOG(...) NSLog(__VA_ARGS__)
@@ -86,5 +80,10 @@
  レスポンバリデーションの設定状況を取得
  */
 + (BOOL)getResponseValidationFlag;
+
+/**
+ プッシュ通知アラートを表示させる
+ */
++ (void)showConfirmPushNotification;
 
 @end

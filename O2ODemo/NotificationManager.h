@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-//ニフティクラウド mobile backendのSDKをインポート
+//ニフクラ mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 //CLLocationManagerDelegateの宣言を行う

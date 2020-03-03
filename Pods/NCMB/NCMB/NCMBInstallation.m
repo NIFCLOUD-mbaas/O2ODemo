@@ -1,5 +1,5 @@
 /*
- Copyright 2014 NIFTY Corporation All Rights Reserved.
+ Copyright 2017-2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,13 +31,17 @@
 
 - (void)setDeviceTokenFromData:(NSData *)deviceTokenData{
     if ([deviceTokenData isKindOfClass:[NSData class]] && [deviceTokenData length] != 0){
-        NSMutableString *tokenId = [[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"%@",deviceTokenData]];
-        [tokenId setString:[tokenId stringByReplacingOccurrencesOfString:@" " withString:@""]]; //余計な文字を消す
-        [tokenId setString:[tokenId stringByReplacingOccurrencesOfString:@"<" withString:@""]];
-        [tokenId setString:[tokenId stringByReplacingOccurrencesOfString:@">" withString:@""]];
-        [self setObject:tokenId forKey:@"deviceToken"];
+        const unsigned char *dataBuffer = deviceTokenData.bytes;
+        NSMutableString *token  = [NSMutableString stringWithCapacity:(deviceTokenData.length * 2)];
+        for (int i = 0; i < deviceTokenData.length; ++i) {
+            [token appendFormat:@"%02x", dataBuffer[i]];
+        }
+        [self setObject:token forKey:@"deviceToken"];
     } else {
         [self setObject:nil forKey:@"deviceToken"];
+        #if DEBUG
+            NSLog(@"不正なデバイストークのため、端末登録を行いません");
+        #endif
     }
 }
 
@@ -95,11 +99,11 @@
         NSString *newSdkVer = SDK_VERSION;
         NSString *newAppVer = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
         //SDKバージョンとアプリバージョンの更新
-        if (![sdkVer isEqualToString:newSdkVer]){
+        if (![newSdkVer isEqualToString:sdkVer]){
             [dic setObject:newSdkVer
                                             forKey:@"sdkVersion"];
         }
-        if (![appVer isEqualToString:newAppVer]){
+        if (![newAppVer isEqualToString:appVer]){
             [dic setObject:newAppVer forKey:@"appVersion"];
         }
         NCMBInstallation *installation = [NCMBInstallation installation];
@@ -160,7 +164,6 @@
     if ([response objectForKey:@"timeZone"]){
         _timeZone = [response objectForKey:@"timeZone"];
     }
-    [self saveInstallationToFile];
 }
 
 - (void)afterDelete{

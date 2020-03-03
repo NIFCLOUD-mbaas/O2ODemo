@@ -15,7 +15,7 @@
  */
 
 #import "AppDelegate.h"
-//ニフティクラウド mobile backendのSDKをインポート
+//ニフクラ mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 #import "NotificationManager.h"
