@@ -1,5 +1,5 @@
 /*
- Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ Copyright 2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 #import "AppDelegate.h"
-//ニフクラ mobile backendのSDKをインポート
+//ニフティクラウド mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 #import "NotificationManager.h"
@@ -33,15 +33,18 @@ static NotificationManager *manager = nil;
     // Override point for customization after application launch.
     
     //SDKの初期化
-    [NCMB setApplicationKey:@"YOUR_APP_KEY"
-                  clientKey:@"YOUR_CLIENT_KEY"];
+    [NCMB setApplicationKey:@"APPKEY"
+                  clientKey:@"CLIENTKEY"];
     
     //プッシュ通知の許可画面を表示させる
-
+    UIUserNotificationType types = UIUserNotificationTypeBadge |
+                                   UIUserNotificationTypeSound |
+                                   UIUserNotificationTypeAlert;
+    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
     
-    //リモートプッシュ通知を受信するためのdeviceTokenを要求
-    
-    //application:didFinishLaunchingWithOptions:のreturn文前に追加
+    manager = [[NotificationManager alloc] init];
     
     return YES;
 }
@@ -50,6 +53,37 @@ static NotificationManager *manager = nil;
 
 
 //APNsから配信されたプッシュ通知を受信した時に呼び出されるデリゲートメソッド
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    //ペイロードから位置情報を保持しているデータのobjectIdを取得
+    NSString *locationId = nil;
+    locationId = [userInfo objectForKey:@"locationId"];
+
+    if (locationId){
+        //このあとここに処理を書いていきます
+        [manager searchLocations:locationId block:^(NSError *error) {
+            if (error){
+                NSLog(@"error:%@",error);
+            }
+            completionHandler(UIBackgroundFetchResultNewData);
+        }];
+    }
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NCMBInstallation *installation = [NCMBInstallation currentInstallation];
+
+    //デバイストークンをセット
+    [installation setDeviceTokenFromData:deviceToken];
+
+    //ニフクラ mobile  backendのデータストアに登録
+    [installation saveInBackgroundWithBlock:^(NSError *error) {
+        if(!error){
+            //端末情報の登録が成功した場合の処理
+        } else {
+            //端末情報の登録が失敗した場合の処理
+        }
+    }];
+}
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
