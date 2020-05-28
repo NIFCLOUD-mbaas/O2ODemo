@@ -1,5 +1,5 @@
 # 位置情報プッシュ通知でO2Oアプリを作ってみよう
-*2020/05/27更新*
+*作成日：2020/03/03（更新日：2020/05/27）*
 
 ## 概要
 * このチュートリアルでは、アプリ利用者が設定された領域に来るとプッシュ通知を行う
@@ -25,7 +25,7 @@ Location Notificationの仕組みを利用します。
 <div style="page-break-before:always"></div>
 
 ## 準備
-### 準備するもの
+### 動作確認環境
 * ニフクラmobile backend 会員登録
   * 下記リンクより登録（無料）をお願いします<br>https://mbaas.nifcloud.com/
 * Mac OS Mojave 10.14.4
@@ -37,6 +37,11 @@ Location Notificationの仕組みを利用します。
 * [ニフクラ mobile backend](https://console.mbaas.nifcloud.com)にログインしてアプリを作成
    * 以下のアプリ作成完了画面が表示されればOKです
 <img src="Readme-img/applicationCreated.png" alt="mobile backendでのアプリ作成完了画面">
+
+### ニフクラ mobile backendの設定
+* プッシュ通知の許可とAPNsの証明書(p12形式)のアップロードを行う
+* 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](/doc/current/tutorial/push_setup_ios.html)をご覧ください
+<img src="Readme-img/pushConfig.png" alt="プッシュ通知の設定" >
 
 ### 店舗情報の準備
 * データストアにLocationという名前のクラスを作成
@@ -60,6 +65,16 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 ディレクトリにある**O2ODemo.xcworkspaceをXcodeで開いてください**
 
+### Location Notificationの再設定を行う
+
+* 以下のようにUserNotificationsを利用できるように準備します。
+    * Xcode上でプロジェクト設定画面を開き、Build Phasesを選択し、Link Binary With LibrariesにUserNotifications.frameworkを追加します。
+ <img src="Readme-img/xcode_add_usernotification_framework.png" alt="フレームワークを追加" width="680">
+
+### Xcodeでのプッシュ通知設定
+* CapabilitiesのBackground ModesでRemote Notificationsを有効にする
+</br>(サンプルプロジェクトでは設定済み)
+
 ### ニフクラ mobile backend SDKの初期化
 
 * AppDelegate.mを開く
@@ -71,6 +86,30 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 [NCMB setApplicationKey:@"YOUR_APPLICATION_KEY" clientKey:@"YOUR_CLIENT_KEY"];
 ```
 
+## アプリを実行してみましょう!
+* 以下の手順でアプリを実行してください。
+    * iOSシミュレーターでアプリを実行(Xcode左上の実行ボタンをクリック)
+    * 起動したアプリのtestボタンをタップする
+    (Local Notificationが設定される)
+    * ホーム画面を表示させる
+    * シミュレータの位置情報を変更
+        * 1. City Runに変更
+        * Custom Locationに変更
+        * LOCATION_IDに設定した店舗の位置情報を設定
+        (City RunからCustom Locationに変更しないと通知が行われません)
+    * プッシュ通知が表示される
+* デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
+    * データストアのinstallationクラスにデータが登録されたか確認
+* ニフクラ mobile backendの管理画面からプッシュ通知を配信
+    * JSONに{"locationId":"LOCATION_ID"}を設定
+    (LOCATION_IDはLocationクラスの任意のobjectId)
+    * タイトル、メッセージは空白
+    * iOS向けに配信
+    * 音声ファイル名のdefaultは削除
+    *  *content-availableを有効にする*
+* 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。
+
+## 解説
 ### 位置情報に基づく通知の配信
 * 位置情報の検索と、Location Notificationの設定部分を実装していきます
     * 以下の図の2、3番の部分
@@ -112,14 +151,6 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 }
 
 ```
-
-### 位置情報の利用許可画面に表示する使用目的を書く
-* Supporting FilesディレクトリにあるInfo.plistを開く
-* NSLocationWhenInUseUsageDescriptionキーに位置情報の使用目的を書く
-    * 使用目的を書かないと位置情報許可画面が表示されません
-
-<img src="Readme-img/plist.png" alt="位置情報の使用目的を書く" >
-
 
 ### 店舗情報を取得する処理を実装（その1)
 * NotificationManager.mのsearchLocations:block:メソッドを実装
@@ -177,13 +208,9 @@ NCMBGeoPoint *point = [location objectForKey:@"geo"];
 }
 ```
 
-
 ### Location Notificationの再設定を行う
 * Location Notification設定方法はiOS 10未満とiOS 10以上の場合で異なりますが、両場合を考慮した実装方法を説明していきます。
 
-* 以下のようにUserNotificationsを利用できるように準備します。
-    ** Xcode上でプロジェクト設定画面を開き、Build Phasesを選択し、Link Binary With LibrariesにUserNotifications.frameworkを追加します。
- <img src="Readme-img/xcode_add_usernotification_framework.png" alt="フレームワークを追加" width="680">
 * Location Notificationを設定したいファイルに以下のコードを追加します。
 
 ```objective-c
@@ -355,18 +382,41 @@ if (OS_10_0_0_OR_NEWER){
 }
 ```
 
-## アプリを実行してみましょう!
-* 以下の手順でアプリを実行してください。
-    * iOSシミュレーターでアプリを実行(Xcode左上の実行ボタンをクリック)
-    * 起動したアプリのtestボタンをタップする
-    (Local Notificationが設定される)
-    * ホーム画面を表示させる
-    * シミュレータの位置情報を変更
-        * 1. City Runに変更
-        * Custom Locationに変更
-        * LOCATION_IDに設定した店舗の位置情報を設定
-        (City RunからCustom Locationに変更しないと通知が行われません)
-    * プッシュ通知が表示される
+### deviceTokenの要求
+* AppDelegate.mを開く
+* プッシュ通知許可画面表示の下に追加
+
+```objective-c
+UIUserNotificationType types = UIUserNotificationTypeBadge |
+                               UIUserNotificationTypeSound |
+                               UIUserNotificationTypeAlert;
+UIUserNotificationSettings *mySettings =
+[UIUserNotificationSettings settingsForTypes:types categories:nil];
+[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+
+//リモートプッシュ通知を受信するためのdeviceTokenを要求
+[[UIApplication sharedApplication] registerForRemoteNotifications];
+
+
+### 位置情報の利用許可画面に表示する使用目的を書く
+* Supporting FilesディレクトリにあるInfo.plistを開く
+* NSLocationWhenInUseUsageDescriptionキーに位置情報の使用目的を書く
+    * 使用目的を書かないと位置情報許可画面が表示されません
+
+<img src="Readme-img/plist.png" alt="位置情報の使用目的を書く" >
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Silent Push通知との組み合わせ
 * Silent Push通知を受信するための実装を行っていきます。
@@ -383,28 +433,9 @@ if (OS_10_0_0_OR_NEWER){
 (すでにお店の中にいる人にセールのお知らせがきてしまうことになりかねない)
 * つまり実機でプッシュ通知が表示されるところまで確認するためには、設定したリージョンまで移動しなければなりません。
 
-### ニフクラ mobile backendの設定
-* プッシュ通知の許可とAPNsの証明書(p12形式)のアップロードを行う
-* 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](/doc/current/tutorial/push_setup_ios.html)をご覧ください
-<img src="Readme-img/pushConfig.png" alt="プッシュ通知の設定" >
 
-### Xcodeでのプッシュ通知設定
-* CapabilitiesのBackground ModesでRemote Notificationsを有効にする
-(サンプルプロジェクトでは設定済み)
-### deviceTokenの要求
-* AppDelegate.mを開く
-* プッシュ通知許可画面表示の下に追加
 
-```objective-c
-UIUserNotificationType types = UIUserNotificationTypeBadge |
-                               UIUserNotificationTypeSound |
-                               UIUserNotificationTypeAlert;
-UIUserNotificationSettings *mySettings =
-[UIUserNotificationSettings settingsForTypes:types categories:nil];
-[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 
-//リモートプッシュ通知を受信するためのdeviceTokenを要求
-[[UIApplication sharedApplication] registerForRemoteNotifications];
 ```
 
 ### NotificationManagerをAppDelegateに用意する
@@ -478,17 +509,7 @@ UIUserNotificationSettings *mySettings =
 }
 ```
 
-## アプリを実行してみましょう
-* デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
-    * データストアのinstallationクラスにデータが登録されたか確認
-* ニフクラ mobile backendの管理画面からプッシュ通知を配信
-    * JSONに{"locationId":"LOCATION_ID"}を設定
-    (LOCATION_IDはLocationクラスの任意のobjectId)
-    * タイトル、メッセージは空白
-    * iOS向けに配信
-    * 音声ファイル名のdefaultは削除
-    *  *content-availableを有効にする*
-* 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。
+
 
 ## まとめ
 * 今回のハンズオンで行ったアプリ開発以外の作業は
