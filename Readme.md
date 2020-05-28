@@ -18,7 +18,7 @@ Location Notificationの仕組みを利用します。
 ## ニフクラmobile backendとは
 スマートフォンアプリのバックエンド機能（プッシュ通知・データストア・会員管理・ファイルストア・SNS連携・位置情報検索・スクリプト）が**開発不要**、しかも基本**無料**(注1)で使えるクラウドサービス！
 
-<center><img src="readme-img/002.png" alt="画像2" width="300px"></center>
+<center><img src="Readme-img/002.png" alt="画像2" width="300px"></center>
 
 注1：詳しくは[こちら](https://mbaas.nifcloud.com/function.htm)をご覧ください
 
@@ -33,12 +33,11 @@ Location Notificationの仕組みを利用します。
 * iPhone OS ver. 13.2.2
 
 ## 作業の手順
-### ニフクラmobile backend の準備
+### ニフクラ mobile backendの設定
 * [ニフクラ mobile backend](https://console.mbaas.nifcloud.com)にログインしてアプリを作成
    * 以下のアプリ作成完了画面が表示されればOKです
 <img src="Readme-img/applicationCreated.png" alt="mobile backendでのアプリ作成完了画面">
 
-### ニフクラ mobile backendの設定
 * プッシュ通知の許可とAPNsの証明書(p12形式)のアップロードを行う
 * 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](/doc/current/tutorial/push_setup_ios.html)をご覧ください
 <img src="Readme-img/pushConfig.png" alt="プッシュ通知の設定" >
@@ -54,7 +53,7 @@ Location Notificationの仕組みを利用します。
 
 ### Xcodeプロジェクトをダウンロード
 
-* ハンズオンで使用するプロジェクトをダウンロード(またはgit clone)
+* ハンズオンで使用するプロジェクトをダウンロード(またはgit clone)</br>
 https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 * プロジェクトにあらかじめ実施していることは以下の通りです。
