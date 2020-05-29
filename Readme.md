@@ -18,7 +18,7 @@ Location Notificationの仕組みを利用します。
 ## ニフクラmobile backendとは
 スマートフォンアプリのバックエンド機能（プッシュ通知・データストア・会員管理・ファイルストア・SNS連携・位置情報検索・スクリプト）が**開発不要**、しかも基本**無料**(注1)で使えるクラウドサービス！
 
-<center><img src="Readme-img/002.png" alt="画像2" width="300px"></center>
+<center><img src="Readme-img/002.png" alt="画像2" width="700"></center>
 
 注1：詳しくは[こちら](https://mbaas.nifcloud.com/function.htm)をご覧ください
 
@@ -33,6 +33,13 @@ Location Notificationの仕組みを利用します。
 * iPhone OS ver. 13.2.2
 
 ## 作業の手順
+### プッシュ通知機能を使うための準備
+__[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発用)](https://github.com/NIFTYCloud-mbaas/iOS_Certificate)__
+* 上記のドキュメントをご覧の上、必要な証明書類の作成をお願いします
+ * 証明書の作成には[Apple Developer Program](https://developer.apple.com/account/)の登録（有料）が必要です
+
+![画像i002](/Readme-img/i002.png)
+
 ### ニフクラ mobile backendの設定
 * [ニフクラ mobile backend](https://console.mbaas.nifcloud.com)にログインしてアプリを作成
    * 以下のアプリ作成完了画面が表示されればOKです
@@ -61,6 +68,15 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * CapabilitiesのBackground ModesでLocation Updateを有効化
     * NotificationManagerクラスを作成
     * ストーリーボードでテスト用のボタンを作成
+* ダウンロードしたフォルダを開き、「__O2ODemo.xcworkspace__」をダブルクリックしてXcode開きます(白い方です)
+
+![画像09](/Readme-img/009.png)
+
+<img src="Readme-img/006.png" alt="画像6" width="800px">
+
+* 「O2ODemo.xcodeproj」（青い方）ではないので注意してください！
+
+![画像08](/Readme-img/008.png)
 
 ディレクトリにある**O2ODemo.xcworkspaceをXcodeで開いてください**
 
@@ -88,14 +104,23 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 ## アプリを実行してみましょう!
 * 以下の手順でアプリを実行してください。
     * iOSシミュレーターでアプリを実行(Xcode左上の実行ボタンをクリック)
+
+    <img src="Readme-img/001.png" alt="実行" width="680">
+
     * 起動したアプリのtestボタンをタップする
     (Local Notificationが設定される)
     * ホーム画面を表示させる
     * シミュレータの位置情報を変更
-        * 1. City Runに変更
-        * Custom Locationに変更
-        * LOCATION_IDに設定した店舗の位置情報を設定
-        (City RunからCustom Locationに変更しないと通知が行われません)
+        * City Runに変更
+    
+    <img src="Readme-img/004.png" alt="Location変更" width="480">
+    
+    * Custom Locationに変更
+    
+    <img src="Readme-img/003.png" alt="Location変更" width="480">
+        
+    * LOCATION_IDに設定した店舗の位置情報を設定 </br>
+    (City RunからCustom Locationに変更しないと通知が行われません)    
     * プッシュ通知が表示される
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
@@ -395,6 +420,7 @@ UIUserNotificationSettings *mySettings =
 
 //リモートプッシュ通知を受信するためのdeviceTokenを要求
 [[UIApplication sharedApplication] registerForRemoteNotifications];
+```
 
 
 ### 位置情報の利用許可画面に表示する使用目的を書く
@@ -403,19 +429,6 @@ UIUserNotificationSettings *mySettings =
     * 使用目的を書かないと位置情報許可画面が表示されません
 
 <img src="Readme-img/plist.png" alt="位置情報の使用目的を書く" >
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Silent Push通知との組み合わせ
 * Silent Push通知を受信するための実装を行っていきます。
@@ -432,10 +445,6 @@ UIUserNotificationSettings *mySettings =
 (すでにお店の中にいる人にセールのお知らせがきてしまうことになりかねない)
 * つまり実機でプッシュ通知が表示されるところまで確認するためには、設定したリージョンまで移動しなければなりません。
 
-
-
-
-```
 
 ### NotificationManagerをAppDelegateに用意する
 * static変数にインスタンスを代入するようにapplication:didFinishLaunchingWithOptions:を変更
@@ -507,7 +516,6 @@ UIUserNotificationSettings *mySettings =
 
 }
 ```
-
 
 
 ## まとめ
