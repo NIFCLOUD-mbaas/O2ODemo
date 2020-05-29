@@ -34,7 +34,7 @@ Location Notificationの仕組みを利用します。
 
 ## 作業の手順
 ### プッシュ通知機能を使うための準備
-__[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発用)](https://github.com/NIFTYCloud-mbaas/iOS_Certificate)__
+__[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発用)](https://github.com/NIFCLOUD-mbaas/iOS_Certificate)__
 * 上記のドキュメントをご覧の上、必要な証明書類の作成をお願いします
  * 証明書の作成には[Apple Developer Program](https://developer.apple.com/account/)の登録（有料）が必要です
 
@@ -77,8 +77,6 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 * 「O2ODemo.xcodeproj」（青い方）ではないので注意してください！
 
 ![画像08](/Readme-img/008.png)
-
-ディレクトリにある**O2ODemo.xcworkspaceをXcodeで開いてください**
 
 ### Location Notificationの再設定を行う
 
