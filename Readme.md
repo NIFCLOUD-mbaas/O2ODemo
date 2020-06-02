@@ -33,23 +33,23 @@ Location Notificationの仕組みを利用します。
 * iPhone OS ver. 13.2.2
 
 ## 作業の手順
-### プッシュ通知機能を使うための準備
+### 0.プッシュ通知機能を使うための準備
 __[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発用)](https://github.com/NIFCLOUD-mbaas/iOS_Certificate)__
 * 上記のドキュメントをご覧の上、必要な証明書類の作成をお願いします
  * 証明書の作成には[Apple Developer Program](https://developer.apple.com/account/)の登録（有料）が必要です
 
 ![画像i002](/Readme-img/i002.png)
 
-### ニフクラ mobile backendの設定
+### 1.ニフクラ mobile backendの設定
 * [ニフクラ mobile backend](https://console.mbaas.nifcloud.com)にログインしてアプリを作成
-   * 以下のアプリ作成完了画面が表示されればOKです
+   * 以下のアプリ作成完了画面が表示されればOKです </br>
 <img src="Readme-img/applicationCreated.png" alt="mobile backendでのアプリ作成完了画面">
 
-* プッシュ通知の許可とAPNsの証明書(p12形式)のアップロードを行う
-* 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](/doc/current/tutorial/push_setup_ios.html)をご覧ください
+* プッシュ通知の許可と 「手順 0. プッシュ通知機能を使うための準備」で作成したAPNsの証明書(p12形式)のアップロードを行う
+* 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](https://mbaas.nifcloud.com/doc/current/tutorial/push_setup_ios.html)をご覧ください
 <img src="Readme-img/pushConfig.png" alt="プッシュ通知の設定" >
 
-### 店舗情報の準備
+### 2.店舗情報の準備
 * データストアにLocationという名前のクラスを作成
 * Locationクラスにnameとgeoフィールドを追加
 * 新しいレコードを追加して店舗を登録
@@ -58,9 +58,9 @@ __[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発�
 
 <img src="Readme-img/datastore.PNG" alt="データストアの操作">
 
-### Xcodeプロジェクトをダウンロード
+### 3.Xcodeプロジェクトをダウンロード
 
-* ハンズオンで使用するプロジェクトをダウンロード(またはgit clone)</br>
+* プロジェクトをダウンロード(またはgit clone)</br>
 https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 * プロジェクトにあらかじめ実施していることは以下の通りです。
@@ -72,23 +72,30 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 ![画像09](/Readme-img/009.png)
 
-<img src="Readme-img/006.png" alt="画像6" width="800px">
-
 * 「O2ODemo.xcodeproj」（青い方）ではないので注意してください！
+
+<img src="Readme-img/006.png" alt="画像6" width="800px">
 
 ![画像08](/Readme-img/008.png)
 
-### Location Notificationの再設定を行う
+### 4.Location Notificationの再設定を行う
 
 * 以下のようにUserNotificationsを利用できるように準備します。
     * Xcode上でプロジェクト設定画面を開き、Build Phasesを選択し、Link Binary With LibrariesにUserNotifications.frameworkを追加します。
  <img src="Readme-img/xcode_add_usernotification_framework.png" alt="フレームワークを追加" width="680">
 
-### Xcodeでのプッシュ通知設定
+### 5.Xcodeでのプッシュ通知設定
 * CapabilitiesのBackground ModesでRemote Notificationsを有効にする
 </br>(サンプルプロジェクトでは設定済み)
 
-### ニフクラ mobile backend SDKの初期化
+### 6.位置情報の利用許可画面に表示する使用目的を書く
+* Supporting FilesディレクトリにあるInfo.plistを開く
+* NSLocationWhenInUseUsageDescriptionキーに位置情報の使用目的を書く
+    * 使用目的を書かないと位置情報許可画面が表示されません
+
+<img src="Readme-img/plist.png" alt="位置情報の使用目的を書く" >
+
+### 7.ニフクラ mobile backend SDKの初期化
 
 * AppDelegate.mを開く
     * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、APIキーを書き換えてください。
@@ -122,8 +129,9 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * プッシュ通知が表示される
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
-* ニフクラ mobile backendの管理画面からプッシュ通知を配信
-    * JSONに{"locationId":"LOCATION_ID"}を設定
+* ニフクラ mobile backendの管理画面からプッシュ通知を配信 </br>
+<img src="Readme-img/005.png" alt="プッシュ通知を配信" width="480">
+    * JSONに{"locationId":"LOCATION_ID"}を設定</br>
     (LOCATION_IDはLocationクラスの任意のobjectId)
     * タイトル、メッセージは空白
     * iOS向けに配信
@@ -419,14 +427,6 @@ UIUserNotificationSettings *mySettings =
 //リモートプッシュ通知を受信するためのdeviceTokenを要求
 [[UIApplication sharedApplication] registerForRemoteNotifications];
 ```
-
-
-### 位置情報の利用許可画面に表示する使用目的を書く
-* Supporting FilesディレクトリにあるInfo.plistを開く
-* NSLocationWhenInUseUsageDescriptionキーに位置情報の使用目的を書く
-    * 使用目的を書かないと位置情報許可画面が表示されません
-
-<img src="Readme-img/plist.png" alt="位置情報の使用目的を書く" >
 
 ### Silent Push通知との組み合わせ
 * Silent Push通知を受信するための実装を行っていきます。
