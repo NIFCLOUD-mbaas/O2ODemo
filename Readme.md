@@ -1,6 +1,8 @@
 # 位置情報プッシュ通知でO2Oアプリを作ってみよう
 *作成日：2020/03/03（更新日：2020/05/27）*
 
+<img src="Readme-img/Picture1.png" alt="概要" width="800px" >
+
 ## 概要
 * このチュートリアルでは、アプリ利用者が設定された領域に来るとプッシュ通知を行う
 Location Notificationの仕組みを利用します。
@@ -42,8 +44,14 @@ __[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発�
 
 ### 1.ニフクラ mobile backendの設定
 * [ニフクラ mobile backend](https://console.mbaas.nifcloud.com)にログインしてアプリを作成
-   * 以下のアプリ作成完了画面が表示されればOKです </br>
+<img src="Readme-img/007.png" alt="mobile backendでのアプリ作成画面">
+
+* 以下のアプリ作成完了画面が表示されればOKです 
+
 <img src="Readme-img/applicationCreated.png" alt="mobile backendでのアプリ作成完了画面">
+
+* この２種類のAPIキー（アプリケーションキーとクライアントキー）はXcodeで作成するiOSアプリにニフクラ mobile backendを紐付けるために使用します
+<img src="Readme-img/APIkey.png" alt="APIの作成" width="900px">
 
 * プッシュ通知の許可と 「手順 0. プッシュ通知機能を使うための準備」で作成したAPNsの証明書(p12形式)のアップロードを行う
 * 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](https://mbaas.nifcloud.com/doc/current/tutorial/push_setup_ios.html)をご覧ください
@@ -74,9 +82,10 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 * 「O2ODemo.xcodeproj」（青い方）ではないので注意してください！
 
+![画像08](/Readme-img/008.png)
+
 <img src="Readme-img/006.png" alt="画像6" width="800px">
 
-![画像08](/Readme-img/008.png)
 
 ### 4.Location Notificationの再設定を行う
 
@@ -88,7 +97,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 * CapabilitiesのBackground ModesでRemote Notificationsを有効にする
 </br>(サンプルプロジェクトでは設定済み)
 
-### 6.位置情報の利用許可画面に表示する使用目的を書く
+### 6. Xcodeでの位置情報の利用許可画面に表示する使用目的を書く
 * Supporting FilesディレクトリにあるInfo.plistを開く
 * NSLocationWhenInUseUsageDescriptionキーに位置情報の使用目的を書く
     * 使用目的を書かないと位置情報許可画面が表示されません
@@ -100,6 +109,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 * AppDelegate.mを開く
     * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、APIキーを書き換えてください。
     (APIキーは、ニフクラ mobile backendの管理画面から「アプリ設定->基本」を開くことで確認できます。)
+
 
 ```objective-c
 //SDKの初期化
@@ -129,15 +139,15 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * プッシュ通知が表示される
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
-* ニフクラ mobile backendの管理画面からプッシュ通知を配信 </br>
-<img src="Readme-img/005.png" alt="プッシュ通知を配信" width="480">
-    * JSONに{"locationId":"LOCATION_ID"}を設定</br>
-    (LOCATION_IDはLocationクラスの任意のobjectId)
+* ニフクラ mobile backendの管理画面からプッシュ通知を配信
+<img src="Readme-img/005.png" alt="プッシュ通知を配信" width="800px"> </br> 
+
+* JSONに{"locationId":"LOCATION_ID"}を設定</br>(LOCATION_IDはLocationクラスの任意のobjectId)
     * タイトル、メッセージは空白
     * iOS向けに配信
     * 音声ファイル名のdefaultは削除
-    *  *content-availableを有効にする*
-* 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。
+    * content-availableを有効にする
+    * 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。
 
 ## 解説
 ### 位置情報に基づく通知の配信
