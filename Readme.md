@@ -66,6 +66,8 @@ __[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発�
 
 <img src="Readme-img/datastore.PNG" alt="データストアの操作">
 
+* このとき登録したデータのobjectIDは後程使用しますので、別途コピーしておいてください
+
 ### 3.Xcodeプロジェクトをダウンロード
 
 * プロジェクトをダウンロード(またはgit clone)</br>
@@ -110,11 +112,10 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、APIキーを書き換えてください。
     (APIキーは、ニフクラ mobile backendの管理画面から「アプリ設定->基本」を開くことで確認できます。)
 
+### 8. ボタンを押した時のアクションを指定
 
-```objective-c
-//SDKの初期化
-[NCMB setApplicationKey:@"YOUR_APPLICATION_KEY" clientKey:@"YOUR_CLIENT_KEY"];
-```
+* ViewController.mを開く
+    * updateLocationNotification:メソッドにあるLOCATION_IDをデータストアに登録したデータのobjectIdに書き換える
 
 ## アプリを実行してみましょう!
 * 以下の手順でアプリを実行してください。
