@@ -1,5 +1,5 @@
 /*webview-panel:webview-panel/webview-f6ea6b5e-6151-4f82-87a7-0d5de8aa22dd
- Copyright 2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ Copyright 2020 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ static NotificationManager *manager = nil;
     // Override point for customization after application launch.
     
     //SDKの初期化
-    [NCMB setApplicationKey:@"0730e01abce99ac3d5400690cb658a25f79e8f0bac8895dd67283e9b98077d1e"
-                  clientKey:@"d4175a28a524d55c47057f6f77b47c0c654842521b94488442867c82deb83dac"];
+    [NCMB setApplicationKey:@"YOUR_APPLICATION_KEY"
+                  clientKey:@"YOUR_CLIENT_KEY"];
     
     //プッシュ通知の許可画面を表示させる
     UIUserNotificationType types = UIUserNotificationTypeBadge |

@@ -1,5 +1,5 @@
 /*
- Copyright 2019 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ Copyright 2020 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-//ニフティクラウド mobile backendのSDKをインポート
+//NIFCLOUD mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 //CLLocationManagerDelegateの宣言を行う

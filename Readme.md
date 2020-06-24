@@ -114,6 +114,8 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、APIキーを書き換えてください。
     (APIキーは、ニフクラ mobile backendの管理画面から「アプリ設定->基本」を開くことで確認できます。)
 
+<img src="Readme-img/APIキー.png" alt="APIキー設定" >
+
 ### 8. ボタンを押した時のアクションを指定
 
 * ViewController.mを開く
@@ -143,7 +145,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     <img src="Readme-img/location.png" alt="Location変更" width="480">
 
     * プッシュ通知が表示される
-    
+
     <img src="Readme-img/push.png" alt="プッシュ通知表示" width="480">
 
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
