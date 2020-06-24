@@ -121,7 +121,14 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 * ViewController.mを開く
     * updateLocationNotification:メソッドにあるLOCATION_IDをデータストアに登録したデータのobjectIdに書き換える
 
-## アプリを実行してみましょう!
+### 9. アプリを実行してみましょう!
+* エミュレータでの実行方法と、実機での実行方法の2つのやり方があります。
+ * エミュレーターで実行方法
+        * Silent Push通知の内容からセールを実施する店舗を取得
+    * 実機で実行方法
+        * セールのお知らせを行うLocation Notificationを設定　
+
+#### 9.1 エミュレータでの実行(デモ)        
 * 以下の手順でアプリを実行してください。
     * iOSシミュレーターでアプリを実行(Xcode左上の実行ボタンをクリック)
 
@@ -148,6 +155,10 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
     <img src="Readme-img/push.png" alt="プッシュ通知表示" width="380">
 
+#### 9.2 実機での実行(実践)
+* お店の場所(Pushを表示したい場所)の緯度と経度を検索する (1)
+* [店舗情報の準備](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#2.店舗情報の準備)を参考に(1)の緯度と経度を新しいレコードとして追加します。
+* [ボタンを押した時のアクションを指定](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#8ボタンを押した時のアクションを指定)を参考にLocation IDを(1)で作成したobjectIdに変更します。
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
 * ニフクラ mobile backendの管理画面からプッシュ通知を配信
