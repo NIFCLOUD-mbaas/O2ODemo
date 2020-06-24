@@ -1,5 +1,5 @@
 /*
- Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ Copyright 2020 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,9 +31,10 @@ static NotificationManager *manager = nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     //static変数にNotificationManagerのインスタンスを代入
-
+    manager = [[NotificationManager alloc] init];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -44,6 +45,11 @@ static NotificationManager *manager = nil;
 - (IBAction)updateLocationNotification:(id)sender {
     
     //NotificatonManagerの店舗情報取得メソッドを呼び出す
+    [manager searchLocations:@"LOCATION_ID" block:^(NSError *error) {
+        if (error){
+            NSLog(@"error:%@",error);
+        }
+    }];
 }
 
 @end

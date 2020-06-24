@@ -1,5 +1,5 @@
 /*
- Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ Copyright 2020 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,11 +17,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-//ニフクラ mobile backendのSDKをインポート
+//NIFCLOUD mobile backendのSDKをインポート
 #import <NCMB/NCMB.h>
 
 //CLLocationManagerDelegateの宣言を行う
 @interface NotificationManager : NSObject<CLLocationManagerDelegate>
+
+@property (nonatomic, strong) CLLocationManager *mLocationManager;
+
 //与えられた店舗のIDをもとにクラウドから店舗情報を取得し、updateLocationを呼び出す
 - (void)searchLocations:(NSString*)locationId block:(void (^)(NSError *error))blk;
 //与えられた位置情報をもとにLocation Notificationを再設定する
