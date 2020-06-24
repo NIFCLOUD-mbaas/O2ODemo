@@ -146,7 +146,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
     * プッシュ通知が表示される
 
-    <img src="Readme-img/push.png" alt="プッシュ通知表示" width="480">
+    <img src="Readme-img/push.png" alt="プッシュ通知表示" width="380">
 
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
