@@ -11,9 +11,11 @@ Location Notificationの仕組みを利用します。
 * Location Notificationと組み合わせることで、セール情報などタイムリーなお知らせを動的に更新できる仕組みを作ります。
 * 特定のエリアにいるアプリ利用者にだけその近辺のセール情報を通知するようなO2Oアプリを実際に作成していきます。
 * アプリの主な動作フロー
-    * 1. セール情報の更新を行うためにSilent Push通知を配信
-    * 2. Silent Push通知の内容からセールを実施する店舗を取得
-    * 3. セールのお知らせを行うLocation Notificationを設定
+    * エミュレーターで実行
+        * 1. セール情報の更新を行うためにSilent Push通知を配信 
+        * 2. Silent Push通知の内容からセールを実施する店舗を取得
+    * 実機で実行
+        * 3. セールのお知らせを行うLocation Notificationを設定　
 
 <img src="Readme-img/o2odemo.png" alt="アプリの完成形" >
 
@@ -137,7 +139,13 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
         
     * LOCATION_IDに設定した店舗の位置情報を設定 </br>
     (City RunからCustom Locationに変更しないと通知が行われません)    
+    
+    <img src="Readme-img/location.png" alt="Location変更" width="480">
+
     * プッシュ通知が表示される
+    
+    <img src="Readme-img/push.png" alt="プッシュ通知表示" width="480">
+
 * デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
 * ニフクラ mobile backendの管理画面からプッシュ通知を配信
