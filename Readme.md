@@ -123,7 +123,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 ### 9. アプリを実行してみましょう!
 * エミュレータでの実行方法と、実機での実行方法の2つのやり方があります。
- * エミュレーターで実行方法
+    * エミュレーターで実行方法
         * Silent Push通知の内容からセールを実施する店舗を取得
     * 実機で実行方法
         * セールのお知らせを行うLocation Notificationを設定　
@@ -140,36 +140,37 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     * シミュレータの位置情報を変更
         * City Runに変更
     
-    <img src="Readme-img/004.png" alt="Location変更" width="480">
-    
+    <img src="Readme-img/004.png" alt="Location変更" width="400">
+
     * Custom Locationに変更
     
-    <img src="Readme-img/003.png" alt="Location変更" width="480">
+    <img src="Readme-img/003.png" alt="Location変更" width="400">
         
     * LOCATION_IDに設定した店舗の位置情報を設定 </br>
     (City RunからCustom Locationに変更しないと通知が行われません)    
     
-    <img src="Readme-img/location.png" alt="Location変更" width="480">
+    <img src="Readme-img/location.png" alt="Location変更" width="400">
 
-    * プッシュ通知が表示される
+    * プッシュ通知が表示される  
 
-    <img src="Readme-img/push.png" alt="プッシュ通知表示" width="380">
+    <img src="Readme-img/push.png" alt="プッシュ通知表示" width="350">
 
 #### 9.2 実機での実行(実践)
-* お店の場所(Pushを表示したい場所)の緯度と経度を検索する (1)
-* [店舗情報の準備](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#2.店舗情報の準備)を参考に(1)の緯度と経度を新しいレコードとして追加します。
-* [ボタンを押した時のアクションを指定](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#8ボタンを押した時のアクションを指定)を参考にLocation IDを(1)で作成したobjectIdに変更します。
-* デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
+* (1)お店の場所(Pushを表示したい場所)の緯度と経度を検索する
+* (2)[店舗情報の準備](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#2.店舗情報の準備)を参考に(1)の緯度と経度を新しいレコードとして追加します。
+* (3)[ボタンを押した時のアクションを指定](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#8ボタンを押した時のアクションを指定)を参考にLocation IDを(1)で作成したobjectIdに変更します。
+* (4)デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
-* ニフクラ mobile backendの管理画面からプッシュ通知を配信
+* (5)ニフクラ mobile backendの管理画面からプッシュ通知を配信
 <img src="Readme-img/005.png" alt="プッシュ通知を配信" width="800px"> </br> 
 
-* JSONに{"locationId":"LOCATION_ID"}を設定</br>(LOCATION_IDはLocationクラスの任意のobjectId)
+    * JSONに{"locationId":"LOCATION_ID"}を設定</br>(LOCATION_IDはLocationクラスの任意のobjectId)
     * タイトル、メッセージは空白
     * iOS向けに配信
     * 音声ファイル名のdefaultは削除
     * content-availableを有効にする
-    * 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。
+
+ 端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。以上で実践完了となります。
 
 ## 解説
 ### 位置情報に基づく通知の配信
