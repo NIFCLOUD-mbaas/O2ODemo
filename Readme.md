@@ -4,7 +4,7 @@
 <img src="Readme-img/Picture1.png" alt="概要" width="800px" >
 
 ## 概要
-* このチュートリアルでは、アプリ利用者が設定された領域に来るとプッシュ通知を行う
+* このサンプルでは、アプリ利用者が設定された領域に来るとプッシュ通知を行う
 Location Notificationの仕組みを利用します。
 （Location Notification機能はiOS8から追加された機能です。）
 * 位置情報のデータ保存とサーバーからのプッシュ通知配信にニフクラ mobile backendを利用します。
@@ -32,8 +32,9 @@ Location Notificationの仕組みを利用します。
 ### 動作確認環境
 * ニフクラmobile backend 会員登録
   * 下記リンクより登録（無料）をお願いします<br>https://mbaas.nifcloud.com/
+* iOS SDK ver. 3.0.3
 * Mac OS Mojave 10.14.4
-* Xcode ver.11.3.1
+* Xcode ver. 11.3.1
 * iPhone OS ver. 13.2.2
 
 ## 作業の手順
@@ -55,14 +56,14 @@ __[【iOS】プッシュ通知の受信に必要な証明書の作り方(開発�
 * この２種類のAPIキー（アプリケーションキーとクライアントキー）はXcodeで作成するiOSアプリにニフクラ mobile backendを紐付けるために使用します
 <img src="Readme-img/APIkey.png" alt="APIの作成" width="900px">
 
-* プッシュ通知の許可と 「手順 0. プッシュ通知機能を使うための準備」で作成したAPNsの証明書(p12形式)のアップロードを行う
+* プッシュ通知の許可と 「手順 0. プッシュ通知機能を使うための準備」で作成した**APNsの証明書(p12形式)のアップロードを行う**
 * 証明書の取得方法は[mBaaSとAPNsの連携に必要な設定](https://mbaas.nifcloud.com/doc/current/tutorial/push_setup_ios.html)をご覧ください
 <img src="Readme-img/pushConfig.png" alt="プッシュ通知の設定" >
 
 ### 2.店舗情報の準備
 * データストアにLocationという名前のクラスを作成
-* Locationクラスにnameとgeoフィールドを追加
-* 新しいレコードを追加して店舗を登録
+* Locationクラスに**nameとgeoフィールドを追加**
+* 新しいレコードを追加して**店舗を登録**
     * name: ニフクラ、geo: 35.696174,139.68951
 *  **geoフィールドは入力形式を緯度経度に変更してください**
 
@@ -77,7 +78,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 * プロジェクトにあらかじめ実施していることは以下の通りです。
     * ニフクラ mobile backendのSDKをインストール済み
-    * CapabilitiesのBackground ModesでLocation Updateを有効化
+    * Capabilitiesの**Background ModesでLocation Updateを有効化**
     * NotificationManagerクラスを作成
     * ストーリーボードでテスト用のボタンを作成
 * ダウンロードしたフォルダを開き、「__O2ODemo.xcworkspace__」をダブルクリックしてXcode開きます(白い方です)
@@ -94,11 +95,11 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 ### 4.Location Notificationの再設定を行う
 
 * 以下のようにUserNotificationsを利用できるように準備します。
-    * Xcode上でプロジェクト設定画面を開き、Build Phasesを選択し、Link Binary With LibrariesにUserNotifications.frameworkを追加します。
+    * Xcode上でプロジェクト設定画面を開き、Build Phasesを選択し、Link Binary With Librariesに**UserNotifications.frameworkを追加します。**
  <img src="Readme-img/xcode_add_usernotification_framework.png" alt="フレームワークを追加" width="680">
 
 ### 5.Xcodeでのプッシュ通知設定
-* CapabilitiesのBackground ModesでRemote Notificationsを有効にする
+* CapabilitiesのBackground Modesで**Remote Notificationsを有効にする**
 </br>(サンプルプロジェクトでは設定済み)
 
 ### 6. Xcodeでの位置情報の利用許可画面に表示する使用目的を書く
@@ -111,7 +112,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 ### 7.ニフクラ mobile backend SDKの初期化
 
 * AppDelegate.mを開く
-    * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、APIキーを書き換えてください。
+    * applications:didFinishLaunchingWithOptions:メソッドにあるSDKの初期化部分で、**APIキーを書き換えてください**。
     (APIキーは、ニフクラ mobile backendの管理画面から「アプリ設定->基本」を開くことで確認できます。)
 
 <img src="Readme-img/APIキー.png" alt="APIキー設定" >
@@ -119,14 +120,24 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 ### 8. ボタンを押した時のアクションを指定
 
 * ViewController.mを開く
-    * updateLocationNotification:メソッドにあるLOCATION_IDをデータストアに登録したデータのobjectIdに書き換える
+    * updateLocationNotification:メソッドにある**LOCATION_IDをデータストアに登録したデータのobjectIdに書き換える**
 
 ### 9. アプリを実行してみましょう!
 * エミュレータでの実行方法と、実機での実行方法の2つのやり方があります。
     * エミュレーターで実行方法
         * Silent Push通知の内容からセールを実施する店舗を取得
     * 実機で実行方法
-        * セールのお知らせを行うLocation Notificationを設定　
+        * セールのお知らせを行うLocation Notificationを設定
+
+### このあとのデバッグについて
+
+* このあとのデバッグでは、以下の用意が必要です。
+* デバッグ用の実機
+    * シミュレータではSilent Push通知を受信できません
+* プッシュ通知の証明書
+* また、Location Notificationの仕様として、すでにリージョン内にいる端末に対しては通知されません。
+(すでにお店の中にいる人にセールのお知らせがきてしまうことになりかねない)
+* つまり実機でプッシュ通知が表示されるところまで確認するためには、設定したリージョンまで移動しなければなりません。
 
 #### 9.1 エミュレータでの実行(デモ)        
 * 以下の手順でアプリを実行してください。
@@ -138,15 +149,15 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
     (Local Notificationが設定される)
     * ホーム画面を表示させる
     * シミュレータの位置情報を変更
-        * City Runに変更
+        * **City Runに変更**
     
     <img src="Readme-img/004.png" alt="Location変更" width="400">
 
-    * Custom Locationに変更
+    * **Custom Locationに変更**
     
     <img src="Readme-img/003.png" alt="Location変更" width="400">
         
-    * LOCATION_IDに設定した店舗の位置情報を設定 </br>
+    * **LOCATION_IDに設定した店舗の位置情報を設定** </br>
     (City RunからCustom Locationに変更しないと通知が行われません)    
     
     <img src="Readme-img/location.png" alt="Location変更" width="400">
@@ -157,8 +168,8 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 #### 9.2 実機での実行(実践)
 * (1)お店の場所(Pushを表示したい場所)の緯度と経度を検索する
-* (2)[店舗情報の準備](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#2.店舗情報の準備)を参考に(1)の緯度と経度を新しいレコードとして追加します。
-* (3)[ボタンを押した時のアクションを指定](https://github.com/vfa-trucldt/O2ODemo/tree/Feature_create_sample_app#8ボタンを押した時のアクションを指定)を参考にLocation IDを(1)で作成したobjectIdに変更します。
+* (2)[店舗情報の準備](https://github.com/NIFCLOUD-mbaas/O2ODemo/#2店舗情報の準備)を参考に(1)の緯度と経度を新しいレコードとして追加します。
+* (3)[ボタンを押した時のアクションを指定](https://github.com/NIFCLOUD-mbaas/O2ODemo/#8-ボタンを押した時のアクションを指定)を参考にLocation IDを(1)で作成した **objectIdに書き換える** 。
 * (4)デバッグ用の実機でアプリを一度起動させて、deviceTokenを登録
     * データストアのinstallationクラスにデータが登録されたか確認
 * (5)ニフクラ mobile backendの管理画面からプッシュ通知を配信
@@ -173,14 +184,14 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
  端末がSilent Push通知を受信した時に、Location Notificationを再設定します。その地域に近づくと通知が表示されます。以上で実践完了となります。
 
 ## 解説
-### 位置情報に基づく通知の配信
-* 位置情報の検索と、Location Notificationの設定部分を実装していきます
+### 位置情報に基づく通知の配信(実装済み)
+* 位置情報の検索と、Location Notificationの設定部分を実装しています
     * 以下の図の2、3番の部分
 
 <img src="Readme-img/o2odemo.png" alt="アプリの完成形" >
 
 ### CLLocationManagerクラスのプロパティを作成
-* NotificatonManager.mを開く
+* NotificationManager.mを開く
 * @interface NotificationManager()の中に、プロパティを追加
 
 ```objective-c
@@ -215,7 +226,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 
 ```
 
-### 店舗情報を取得する処理を実装（その1)
+### 店舗情報を取得する処理を実装済み（その1)
 * NotificationManager.mのsearchLocations:block:メソッドを実装
     * 指定されたlocationIdの店舗情報(位置情報など)をクラウドから取得
 
@@ -245,7 +256,7 @@ https://github.com/NIFCLOUD-mbaas/O2ODemo
 - objectId: データストアのデータを識別するためのID
 - fetchInBackgroundWithBlock:メソッド: 設定されたobjectIdのデータを取得します
 
-### 店舗情報を取得する処理を実装（その2)
+### 店舗情報を取得する処理を実装済み（その2)
 * 店舗情報が取得できたあとの処理としてLocation Notificationの再設定を行うupdateLocation:block:を呼び出します。
 
 ```objective-c
@@ -271,7 +282,7 @@ NCMBGeoPoint *point = [location objectForKey:@"geo"];
 }
 ```
 
-### Location Notificationの再設定を行う
+### Location Notificationの再設定を行う（実装済み）
 * Location Notification設定方法はiOS 10未満とiOS 10以上の場合で異なりますが、両場合を考慮した実装方法を説明していきます。
 
 * Location Notificationを設定したいファイルに以下のコードを追加します。
@@ -283,7 +294,7 @@ NCMBGeoPoint *point = [location objectForKey:@"geo"];
 #define OS_10_0_0_OR_NEWER [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){10, 0, 0}]
 ```
 
-* NotificatonManager.mのupdateLocation:block:メソッドを実装
+* NotificationManager.mのupdateLocation:block:メソッドを実装
 
 * 最初は、以前に登録されたNotificationを全てキャンセルします。
 (セールが複数箇所で行われる場合には必要ありません)
@@ -298,7 +309,7 @@ if (OS_10_0_0_OR_NEWER){
 }
 ```
 
-* NotificatonManager.mのupdateLocation:block:メソッドを実装
+* NotificationManager.mのupdateLocation:block:メソッドを実装しています
 
 * 再設定するためのNotificationを作成します。
 
@@ -320,7 +331,7 @@ if (OS_10_0_0_OR_NEWER){
 
 ```
 
-* NotificatonManager.mのupdateLocation:block:メソッドを実装
+* NotificationManager.mのupdateLocation:block:メソッドを実装しています
 
 CLCircularRegionの変数を用意し、
 引数の位置情報からCLLocationCoordinate2Dを作成します。
@@ -338,7 +349,7 @@ CLLocationCoordinate2D location = CLLocationCoordinate2DMake(geoPoint.latitude,
 ```
 
 
-* NotificatonManager.mのupdateLocation:block:メソッドを実装
+* NotificationManager.mのupdateLocation:block:メソッドを実装しています
 
 リージョンを作成して、リージョンから外に出た場合の通知をOFFにします。
 
@@ -352,7 +363,7 @@ region = [[CLCircularRegion alloc] initWithCenter:location
 region.notifyOnExit = NO;
 ```
 
-* NotificatonManager.mのupdateLocation:block:メソッドを実装
+* NotificationManager.mのupdateLocation:block:メソッドを実装しています
 * リージョンを設定してLocation Notificationを登録します。
 
 ```objective-c
@@ -386,10 +397,10 @@ if (OS_10_0_0_OR_NEWER){
 }
 ```
 
-### NotificationManagerをViewControllerに用意する
+### NotificationManagerをViewControllerに用意する(実装済み)
 
 * ViewController.mを開き、viewDidLoadメソッド内でstatic変数にNotificationManagerのインスタンスを代入してください。
-(NotificatonManagerクラスのインポートとstatic変数の宣言は実装済みです。)
+(NotificationManagerクラスのインポートとstatic変数の宣言は実装しています)
 
 ```objective-c
 - (void)viewDidLoad {
@@ -401,16 +412,16 @@ if (OS_10_0_0_OR_NEWER){
 
 ```
 
-### ボタンを押した時のアクションを指定
+### ボタンを押した時のアクションを指定(実装済み)
 
-* ViewController.mのupdateLocationNotification:を実装
+* ViewController.mのupdateLocationNotification:を実装しています
     * ボタンのアクションで店舗情報の取得メソッドを呼び出すようにする
     * LOCATION_IDをデータストアに登録したデータのobjectIdに書き換える
 
 ```objective-c
 - (IBAction)updateLocationNotification:(id)sender {
 
-    //NotificatonManagerの店舗情報取得メソッドを呼び出す
+    //NotificationManagerの店舗情報取得メソッドを呼び出す
     [manager searchLocations:@"LOCATION_ID" block:^(NSError *error) {
         if (error){
             NSLog(@"error:%@",error);
@@ -420,7 +431,7 @@ if (OS_10_0_0_OR_NEWER){
 }
 ```
 
-### プッシュ通知の許可画面を表示させる
+### プッシュ通知の許可画面を表示させる(実装済み)
 
 * AppDelegate.mを開く
 * ニフクラ mobile backendの初期化処理のあとに追加
@@ -445,7 +456,7 @@ if (OS_10_0_0_OR_NEWER){
 }
 ```
 
-### deviceTokenの要求
+### deviceTokenの要求(実装済み)
 * AppDelegate.mを開く
 * プッシュ通知許可画面表示の下に追加
 
@@ -461,23 +472,12 @@ UIUserNotificationSettings *mySettings =
 [[UIApplication sharedApplication] registerForRemoteNotifications];
 ```
 
-### Silent Push通知との組み合わせ
-* Silent Push通知を受信するための実装を行っていきます。
+### Silent Push通知との組み合わせ(実装済み)
+* Silent Push通知を受信するための実装をしています。
     * 以下の図の1番の部分
 <img src="Readme-img/o2odemo.png" alt="アプリの完成形" >
 
-### このあとのデバッグについて
-
-* このあとのデバッグでは、以下の用意が必要です。
-* デバッグ用の実機
-    * シミュレータではSilent Push通知を受信できません
-* プッシュ通知の証明書
-* また、Location Notificationの仕様として、すでにリージョン内にいる端末に対しては通知されません。
-(すでにお店の中にいる人にセールのお知らせがきてしまうことになりかねない)
-* つまり実機でプッシュ通知が表示されるところまで確認するためには、設定したリージョンまで移動しなければなりません。
-
-
-### NotificationManagerをAppDelegateに用意する
+### NotificationManagerをAppDelegateに用意する(実装済み)
 * static変数にインスタンスを代入するようにapplication:didFinishLaunchingWithOptions:を変更
     * (static変数の宣言とNotificationManagerクラスのインポートは実施済み)
 
@@ -493,7 +493,7 @@ UIUserNotificationSettings *mySettings =
 }
 ```
 
-### deviceTokenをクラウドに登録する
+### deviceTokenをクラウドに登録する(実装済み)
 * AppDelegate.mに以下のデリゲートメソッドを追加
     * デバイストークンがAPNsから発行された時に呼び出されます
 
@@ -522,7 +522,7 @@ UIUserNotificationSettings *mySettings =
 * setDeviceTokenFromData:メソッド: デバイストークンをセットするメソッド
 * saveInBackgroundWithBlock: NCMBInstallationをデータストアに登録するメソッド
 
-### プッシュ通知受信時の処理を実装
+### プッシュ通知受信時の処理を実装済み
 * AppDelegate.mに以下のデリゲートメソッドを追加
 * サーバーから配信されたプッシュ通知を受信した時に呼び出されます
 
